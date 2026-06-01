@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOY Restaurant</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #020c2f;
+    --gold: #c9a84c;
+    --white: #f0f4ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background: var(--navy);
+    font-family: 'Raleway', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 100px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(201,168,76,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(10,22,40,0.9) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== SUZUVCHI YULDUZLAR ===== */
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .star {
+    position: absolute;
+    background: rgba(201,168,76,0.8);
+    border-radius: 50%;
+    animation: floatUp var(--d, 8s) linear infinite;
+    animation-delay: var(--delay, 0s);
+    opacity: 0;
+  }
+
+  @keyframes floatUp {
+    0%   { transform: translateY(0) scale(0.8); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 0.6; }
+    100% { transform: translateY(-110vh) scale(1.2); opacity: 0; }
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* Logo */
+  .logo-wrap {
+    margin-bottom: 4px;
+    animation: fadeDown 0.8s ease both;
+    position: relative;
+    display: inline-block;
+  }
+
+  .logo-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: linear-gradient(
+      105deg,
+      transparent 35%,
+      rgba(255,240,180,0.15) 50%,
+      transparent 65%
+    );
+    background-size: 250% 100%;
+    animation: logoShimmer 4s linear infinite;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  @keyframes logoShimmer {
+    0%   { background-position: 200% center; }
+    100% { background-position: -200% center; }
+  }
+  .logo-wrap img {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    
+    object-fit: cover;
+    background: var(--navy);
+    box-shadow: 0 0 20px rgba(201,168,76,0.2);
+  }
+  .logo-fallback {
+    display: none;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    background: var(--navy);
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 30px rgba(201,168,76,0.3);
+  }
+
+  /* ===== SOY YALTIRASH EFFEKTI ===== */
+  .title {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    letter-spacing: 4px;
+    text-align: center;
+    animation: fadeDown 0.8s 0.1s ease both;
+    background: linear-gradient(
+      90deg,
+      #c9a84c 0%,
+      #f5e6a3 25%,
+      #ffffff 50%,
+      #f5e6a3 75%,
+      #c9a84c 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeDown 0.8s 0.1s ease both, shimmer 3s linear infinite;
+  }
+
+  @keyframes shimmer {
+    0%   { background-position: 200% center; }
+    100% { background-position: -200% center; }
+  }
+
+  .subtitle {
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: -4px;
+    animation: fadeDown 0.8s 0.2s ease both;
+  }
+  .slogan {
+    font-size: 12px;
+    color: rgba(201,168,76,0.6);
+    letter-spacing: 1px;
+    font-style: italic;
+    text-align: center;
+    margin-top: 2px;
+    margin-bottom: 4px;
+    animation: fadeDown 0.8s 0.25s ease both;
+  }
+  .divider {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    margin-bottom: 16px;
+    animation: fadeIn 1s 0.3s ease both;
+  }
+
+  /* Buttons */
+  .btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 15px 22px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(201,168,76,0.2);
+    color: var(--white);
+    text-decoration: none;
+    font-family: 'Raleway', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .btn:hover::before { opacity: 1; }
+  .btn:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(201,168,76,0.15);
+  }
+  .btn:active { transform: translateY(0); }
+
+  .btn .icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: rgba(201,168,76,0.15);
+    color: #c9a84c;
+  }
+  .btn .label { flex: 1; }
+  .btn .label small {
+    display: block;
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    color: rgba(240,244,255,0.5);
+    text-transform: none;
+    margin-top: 2px;
+  }
+  .btn .arrow {
+    color: var(--gold);
+    opacity: 0.5;
+    font-size: 14px;
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  .btn:hover .arrow { opacity: 1; transform: translateX(3px); }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .footer {
+    margin-top: 32px;
+    font-size: 10px;
+    color: rgba(201,168,76,0.3);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* Share FAB */
+  .share-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c9a84c, #e8c97a);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.4);
+    z-index: 99;
+    transition: all 0.3s ease;
+  }
+  .share-fab:hover { transform: scale(1.1); }
+  .share-fab svg { color: #020c2f; }
+
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    background: #0f1f3d;
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold);
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    z-index: 99;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* PHONE MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(6px);
+    z-index: 100;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 24px;
+  }
+  .modal-overlay.active { display: flex; animation: overlayIn 0.25s ease; }
+  @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal-box {
+    width: 100%;
+    max-width: 420px;
+    background: #0e1e46;
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 20px 20px 16px 16px;
+    padding: 28px 20px 20px;
+    animation: slideUp 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
+  }
+  @keyframes slideUp {
+    from { transform: translateY(80px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--gold);
+    font-size: 17px;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  .modal-divider {
+    width: 50px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    margin: 12px auto 20px;
+  }
+  .section-label {
+    font-size: 10px;
+    color: rgba(201,168,76,0.7);
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    padding-left: 4px;
+  }
+  .phone-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 16px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(201,168,76,0.12);
+    color: var(--white);
+    text-decoration: none;
+    margin-bottom: 8px;
+    transition: all 0.25s ease;
+  }
+  .phone-btn:hover {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.07);
+    transform: translateX(4px);
+  }
+  .p-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(201,168,76,0.15);
+    color: #c9a84c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .p-info { flex: 1; }
+  .p-tag {
+    font-size: 9px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .p-num {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--white);
+  }
+  .section-gap { margin-top: 16px; }
+  .modal-close {
+    width: 100%;
+    margin-top: 18px;
+    padding: 13px;
+    border-radius: 10px;
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.15);
+    color: rgba(240,244,255,0.4);
+    font-family: 'Raleway', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .modal-close:hover { border-color: rgba(201,168,76,0.4); color: var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="container">
+
+  <!-- Logo -->
+  <div class="logo-wrap">
+    <img src="https://i.ibb.co/XrmRgH4s/logo.jpg" alt="SOY Restaurant"
+         onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
+    <div class="logo-fallback" id="logo-fallback">
+      <span style="font-family:'Playfair Display',serif; color:#c9a84c; font-size:28px; font-weight:700;">SOY</span>
+    </div>
+  </div>
+
+  <div class="title">SOY</div>
+  <div class="subtitle">Restaurant & Chayxana</div>
+  <div class="slogan">✦ Mazali taom, samimiy xizmat ✦</div>
+  <div class="divider"></div>
+
+  <!-- 1. Murojaat uchun -->
+  <div class="btn" onclick="openModal()">
+    <div class="icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+      </svg>
+    </div>
+    <div class="label">Murojaat uchun <small>Buyurtma va bron qilish</small></div>
+    <span class="arrow">›</span>
+  </div>
+
+  <!-- 2. Telegram -->
+  <a href="http://t.me/chayxana_soy_restaurant" class="btn" target="_blank">
+    <div class="icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.01 9.47c-.148.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.16 14.27l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.656.316z"/>
+      </svg>
+    </div>
+    <div class="label">Telegram <small>Yangiliklar va aksiyalar</small></div>
+    <span class="arrow">›</span>
+  </a>
+
+  <!-- 3. Instagram -->
+  <a href="https://www.instagram.com/soy__restaurantuz?igsh=YmZwMHFodmtzMmty" class="btn" target="_blank">
+    <div class="icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+      </svg>
+    </div>
+    <div class="label">Instagram <small>Foto va videolar</small></div>
+    <span class="arrow">›</span>
+  </a>
+
+  <!-- 4. Online Menu -->
+  <a href="https://smartmenu.uz/restaran/6" class="btn" target="_blank">
+    <div class="icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M8.1 13.34l2.83-2.83L3.91 3.5c-1.56 1.56-1.56 4.09 0 5.66l4.19 4.18zm6.78-1.81c1.53.71 3.68.21 5.27-1.38 1.91-1.91 2.28-4.65.81-6.12-1.46-1.46-4.2-1.1-6.12.81-1.59 1.59-2.09 3.74-1.38 5.27L3.7 19.87l1.41 1.41L12 14.41l6.88 6.88 1.41-1.41L13.41 13l1.47-1.47z"/>
+      </svg>
+    </div>
+    <div class="label">Online Menyu <small>Taomlar va narxlar</small></div>
+    <span class="arrow">›</span>
+  </a>
+
+  <!-- 5. Manzil -->
+  <a href="https://maps.app.goo.gl/RUpdsFSmDJrX5rfA7?g_st=atm" class="btn" target="_blank">
+    <div class="icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+      </svg>
+    </div>
+    <div class="label">Manzil — SOY Chayxana <small>Google Maps'da ko'rish</small></div>
+    <span class="arrow">›</span>
+  </a>
+
+  <div class="footer">© SOY Restaurant</div>
+</div>
+
+<!-- Share FAB -->
+<button class="share-fab" onclick="shareCard()" title="Vizitkani ulashish">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/>
+  </svg>
+</button>
+
+<div class="toast" id="toast">✓ Link nusxalandi!</div>
+
+<!-- Phone Modal -->
+<div class="modal-overlay" id="phoneModal" onclick="handleOverlayClick(event)">
+  <div class="modal-box">
+    <div class="modal-title">Bog'lanish</div>
+    <div class="modal-divider"></div>
+
+    <div class="section-label">📦 Buyurtma uchun</div>
+    <a href="tel:+998950135500" class="phone-btn">
+      <div class="p-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+        </svg>
+      </div>
+      <div class="p-info">
+        <span class="p-tag">Buyurtma</span>
+        <span class="p-num">+998 95 013 55 00</span>
+      </div>
+    </a>
+    <a href="tel:+998770635500" class="phone-btn">
+      <div class="p-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+        </svg>
+      </div>
+      <div class="p-info">
+        <span class="p-tag">Buyurtma</span>
+        <span class="p-num">+998 77 063 55 00</span>
+      </div>
+    </a>
+
+    <div class="section-label section-gap">🎉 Joy bron qilish uchun</div>
+    <a href="tel:+998971231327" class="phone-btn">
+      <div class="p-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+        </svg>
+      </div>
+      <div class="p-info">
+        <span class="p-tag">Bron</span>
+        <span class="p-num">+998 97 123 13 27</span>
+      </div>
+    </a>
+
+    <button class="modal-close" onclick="closeModal()">✕ &nbsp; Yopish</button>
+  </div>
+</div>
+
+<script>
+  // Suzuvchi yulduzlar — pastdan yuqoriga
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = 1.5 + Math.random() * 3;
+    const left = Math.random() * 100;
+    const duration = 6 + Math.random() * 10;
+    const delay = Math.random() * 12;
+    s.style.cssText = `
+      left: ${left}%;
+      bottom: -10px;
+      width: ${size}px;
+      height: ${size}px;
+      --d: ${duration}s;
+      --delay: -${delay}s;
+    `;
+    starsEl.appendChild(s);
+  }
+
+  function openModal() {
+    document.getElementById('phoneModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    document.getElementById('phoneModal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('phoneModal')) closeModal();
+  }
+
+  function shareCard() {
+    const url = window.location.href;
+    if (navigator.share) {
+      navigator.share({
+        title: 'SOY Restaurant',
+        text: '🍽️ SOY Restaurant & Chayxana — Mazali taom, samimiy xizmat',
+        url: url
+      });
+    } else {
+      navigator.clipboard.writeText(url).then(() => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+      });
+    }
+  }
+</script>
+</body>
+</html>
